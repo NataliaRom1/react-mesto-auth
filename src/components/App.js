@@ -33,6 +33,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // Обработчик клика для попап редактирования
   function handleEditProfileClick() {
@@ -76,15 +77,19 @@ function App() {
 
   // Обработчик клика по корзине
   function handleCardDelete(card) {
+    setIsLoading(true);
     api.deleteCard(card._id)
       .then(() => {
         setCards((state) => state.filter((c) => c._id !== card._id));
       })
-      .catch(err => console.log('Ошибка: ', err));
+      .catch(err => console.log('Ошибка: ', err))
+      .finally(() =>
+        setIsLoading(false))
   }
 
   // Обновление данных пользователя
   function handleUpdateUser(data) {
+    setIsLoading(true);
     api.setUserInfo({
       name: data.name,
       about: data.about,
@@ -93,20 +98,26 @@ function App() {
         setCurrentUser(userData);
         closeAllPopups();
       })
-      .catch(err => console.log('Ошибка: ', err));
+      .catch(err => console.log('Ошибка: ', err))
+      .finally(() =>
+        setIsLoading(false))
   }
 
   // Обновление аватара профиля
   function handleUpdateAvatar(data) {
+    setIsLoading(true);
     api.editAvatar({ avatar: data.avatar })
       .then((userData) => {
         setCurrentUser(userData);
         closeAllPopups();
       })
-      .catch(err => console.log('Ошибка: ', err));
+      .catch(err => console.log('Ошибка: ', err))
+      .finally(() =>
+        setIsLoading(false))
   }
-
+  //  Добавление карточки
   function handleAddPlaceSubmit(data) {
+    setIsLoading(true);
     api.addNewCard({
       name: data.name,
       link: data.link
@@ -115,7 +126,9 @@ function App() {
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
-      .catch(err => console.log('Ошибка: ', err));
+      .catch(err => console.log('Ошибка: ', err))
+      .finally(() =>
+        setIsLoading(false))
   }
 
   function checkToken() {
@@ -224,26 +237,29 @@ function App() {
             isOpen={isPopupEditOpen}
             onClose={closeAllPopups}
             onUpdateUser={handleUpdateUser}
+            isLoding={isLoading}
           />
 
           {/* Попап добавления карточки */}
           <AddPlacePopup
             isOpen={isPopupAddOpen}
             onClose={closeAllPopups}
-            onAddPlace={handleAddPlaceSubmit} />
+            onAddPlace={handleAddPlaceSubmit}
+            isLoding={isLoading}
+          />
 
           {/* Попап удаления карточки */}
           <PopupWithForm
             name="delete"
             title="Вы уверены?"
-            buttonText="Да">
-          </PopupWithForm>
+            buttonText={isLoading ? 'Удаление...' : 'Да'}/>
 
           {/* Попап редактирования аватара профиля */}
           <EditAvatarPopup
             isOpen={isPopupEditAvatarOpen}
             onClose={closeAllPopups}
-            onUpdateAvatar={handleUpdateAvatar} />
+            onUpdateAvatar={handleUpdateAvatar}
+            isLoding={isLoading} />
 
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 

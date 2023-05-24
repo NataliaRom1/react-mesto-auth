@@ -85,7 +85,8 @@ function AddPlacePopup(props) {
       isOpen={props.isOpen}
       onClose={props.onClose}
       onSubmit={handleSubmit}
-      buttonText="Создать"
+      buttonText={props.isLoading ? 'Создание...' : 'Создать'}
+      isLoading={props.isLoading}
       buttonStatus={formValid}>
 
       <input
