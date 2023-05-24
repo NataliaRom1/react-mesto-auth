@@ -38,7 +38,8 @@
     npm start
 
 ## **Ссылка на сайт**
-[Ccылка] (https://nataliarom1.github.io/sign-in)
+
+https://nataliarom1.github.io/react-mesto-auth/
 
 ## **Автор**
 
